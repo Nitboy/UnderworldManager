@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using UnderworldManager.Models;
+using UnderworldManager.Business;
 
 namespace UnderworldManager.Models
 {
@@ -14,7 +16,7 @@ namespace UnderworldManager.Models
 
 
     public string Name { get; set; }
-    public Profession Profession { get; set; }
+    public ProfessionInfo? Profession { get; set; }
     public Rank1Roles Rank1Role { get; set; }
     public Rank2Roles? Rank2Role { get; set; }
 
@@ -110,7 +112,7 @@ namespace UnderworldManager.Models
 
     public int GetSkillTotal(Skill skill)
     {
-      var attribute = CharacterAttribute.GetCoreAttribute(skill);
+      var attribute = SkillUtils.GetCoreAttribute(skill);
       int InitialValue = 0;
       switch (attribute)
       {
@@ -212,7 +214,7 @@ namespace UnderworldManager.Models
         }
         if (skillTotal == bestSkillTotal)
         {
-          if (CharacterAttribute.GetCoreAttribute(skill) == dominantAttribute)
+          if (SkillUtils.GetCoreAttribute(skill) == dominantAttribute)
           {
             bestSkill = skill;
             bestSkillTotal = skillTotal;
@@ -285,7 +287,7 @@ namespace UnderworldManager.Models
 
     public int GetSkillRating(Skill skill)
     {
-      CoreAttribute attribute = CharacterAttribute.GetCoreAttribute(skill);
+      CoreAttribute attribute = SkillUtils.GetCoreAttribute(skill);
       int skillRating = 0;
       switch (attribute)
       {
@@ -320,8 +322,8 @@ namespace UnderworldManager.Models
       var sb = new StringBuilder();
       sb.AppendLine($"Name: {Name}");
       sb.AppendLine($"PlayerCharacter: {PlayerCharacter}");
-      sb.AppendLine($"Profession: {Profession}");
-      var description = ProfessionMapper.GetDescription(Profession);
+      sb.AppendLine($"Profession: {Profession?.Profession}");
+      var description = Profession != null ? ProfessionMapper.GetDescription(Profession.Profession) : "No profession assigned";
       sb.AppendLine(description);
       sb.AppendLine($"Rating: {Rating}");
       sb.AppendLine($"Strength: {Strength.Total}");
@@ -344,7 +346,7 @@ namespace UnderworldManager.Models
         sb.Append($"PLAYER - ");
       }
 
-      sb.Append($"{Name} - {Profession} - ");
+      sb.Append($"{Name} - {Profession?.Profession} - ");
 
       sb.Append($"R: {Rating} - S: {Strength.Total} - A: {Agility.Total} - I: {Intelligence.Total} - C: {Charisma.Total}");
       if (Injured)
@@ -365,7 +367,7 @@ namespace UnderworldManager.Models
       {
         sb.Append($"PLAYER - ");
       }
-      sb.Append($"{Name} - {Profession} - ");
+      sb.Append($"{Name} - {Profession?.Profession} - ");
       sb.Append($"R: {Rating} - S: {Strength.Total} - A: {Agility.Total} - I: {Intelligence.Total} - C: {Charisma.Total} - ");
       sb.Append($"Experience Unspent: {ExperienceUnspent}");
 
@@ -379,7 +381,7 @@ namespace UnderworldManager.Models
       {
         sb.Append($"PLAYER - ");
       }
-      sb.Append($"{Name} - {Profession} - ");
+      sb.Append($"{Name} - {Profession?.Profession} - ");
       sb.Append($"R: {Rating} - S: {Strength.Total} - A: {Agility.Total} - I: {Intelligence.Total} - C: {Charisma.Total} - ");
       foreach (var item in SkillIncreases)
       {
@@ -467,6 +469,31 @@ namespace UnderworldManager.Models
     internal void AwardBonusXp(int value)
     {
       ExperienceUnspent += value;
+    }
+
+    public void AddExperience(int amount)
+    {
+        ExperienceUnspent += amount;
+    }
+
+    public void AddGold(int amount)
+    {
+        Gold += amount;
+    }
+
+    public void AddReputation(int amount)
+    {
+        // TODO: Implement reputation system
+    }
+
+    public SkillCheckResultWrapper SkillCheck(Skill skill, int difficulty)
+    {
+        var skillValue = GetSkillRating(skill);
+        var roll = new Random().Next(1, 21);
+        var success = roll + skillValue >= difficulty;
+        var successLevel = (roll + skillValue - difficulty) / 5;
+        var input = new SimpleInput(skillValue, difficulty);
+        return new SkillCheckResultWrapper(new SimpleSkillCheck(skill, (ChallengeLevel)difficulty), new SimpleResult(roll, skillValue, success, successLevel, false, input));
     }
   }
 

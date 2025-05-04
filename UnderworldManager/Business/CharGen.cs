@@ -11,20 +11,18 @@ namespace UnderworldManager.Business
     {
       var dice = new RandomRoller();
 
-      //return new Character(name ?? GenerateName(),
-      //  isMain, RollStat(dice) + 5 * (rank - 1),
-      //  RollStat(dice) + 5 * (rank - 1),
-      //  RollStat(dice) + 5 * (rank - 1),
-      //  RollStat(dice) + 5 * (rank - 1),
-      //  RollGold(dice, rank),
-      //  rank);
+      var strength = RollStat(dice);
+      var intelligence = RollStat(dice);
+      var agility = RollStat(dice);
+      var charisma = RollStat(dice);
+      var gold = RollGold(dice, rank);
 
       var character = new Character(name ?? GenerateName(),
-        isMain, RollStat(dice),
-        RollStat(dice),
-        RollStat(dice),
-        RollStat(dice),
-        RollGold(dice, rank),
+        isMain, strength,
+        intelligence,
+        agility,
+        charisma,
+        gold,
         rank);
       
       if(rank > 1)

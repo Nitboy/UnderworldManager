@@ -16,11 +16,19 @@ namespace UnderworldManager.Business
 
     public bool CritIncrease(Character character)
     {
-      Console.Out.WriteLine($"{character.Name} the {character.Profession} rolled a crit. They must roll higher than their attribute/skill to increase");
+      var professionName = character.Profession != null ? character.Profession.Profession.ToString() : "Unemployed";
+      Console.Out.WriteLine($"{character.Name} the {professionName} rolled a crit. They must roll higher than their attribute/skill to increase");
       bool increase = false;
-      if (ProfessionMapper.IsBasicProfession(character.Profession))
+      
+      if (character.Profession == null)
       {
-        var attribute = ProfessionMapper.FindCoreAttributeByProfession(character.Profession);
+        Console.Out.WriteLine($"{character.Name} has no profession and cannot be trained.");
+        return false;
+      }
+
+      if (ProfessionMapper.IsBasicProfession(character.Profession.Profession))
+      {
+        var attribute = character.Profession.PrimaryAttribute;
         var check = new SimpleAttributeCheck(attribute, ChallengeLevel.Hard);
         var result = DoChallenge(character, check);
         if (!result.Success)
@@ -36,8 +44,8 @@ namespace UnderworldManager.Business
       }
       else
       {
-        var mainSkill = ProfessionMapper.FindSkillByProfession(character.Profession);
-        var mainAttribute = ProfessionMapper.FindCoreAttributeByProfession(character.Profession);
+        var mainSkill = character.Profession.Skill;
+        var mainAttribute = character.Profession.PrimaryAttribute;
         var attributeCheck = new SimpleAttributeCheck(mainAttribute, ChallengeLevel.Hard);
         var skillCheck = new SimpleSkillCheck(mainSkill, ChallengeLevel.Hard);
         var attributeResult = DoChallenge(character, attributeCheck);
@@ -71,8 +79,9 @@ namespace UnderworldManager.Business
 
     public int TrainingIncrease(Character character, Skill skill, int maxTraining)
     {
-      Console.Out.WriteLine($"{character.Name} the {character.Profession} undergoes {skill} training. They must roll higher than their attribute/skill to increase");
-      var mainAttribute = CharacterAttribute.GetCoreAttribute(skill);
+      var professionName = character.Profession != null ? character.Profession.Profession.ToString() : "Unemployed";
+      Console.Out.WriteLine($"{character.Name} the {professionName} undergoes {skill} training. They must roll higher than their attribute/skill to increase");
+      var mainAttribute = SkillUtils.GetCoreAttribute(skill);
       var attributeCheck = new SimpleAttributeCheck(mainAttribute, ChallengeLevel.Hard);
       var skillCheck = new SimpleSkillCheck(skill, ChallengeLevel.Hard);
       var trainingSuccess = 0;
@@ -87,7 +96,7 @@ namespace UnderworldManager.Business
 
       if (trainingSuccess != maxTraining)
       {
-        Console.Out.WriteLine($"Finally {character.Name} the {character.Profession} has a chance to increase their {mainAttribute} training. They must roll higher than their attribute/skill to increase");
+        Console.Out.WriteLine($"Finally {character.Name} the {professionName} has a chance to increase their {mainAttribute} training. They must roll higher than their attribute/skill to increase");
         var success = TryTrainAttribute(character, attributeCheck);
         if (success)
         {
@@ -99,7 +108,8 @@ namespace UnderworldManager.Business
 
     public int TrainingIncrease(Character character, CoreAttribute attribute, int maxTraining)
     {
-      Console.Out.WriteLine($"{character.Name} the {character.Profession} undergoes {attribute} training. They must roll higher than their attribute/skill to increase");    
+      var professionName = character.Profession != null ? character.Profession.Profession.ToString() : "Unemployed";
+      Console.Out.WriteLine($"{character.Name} the {professionName} undergoes {attribute} training. They must roll higher than their attribute/skill to increase");    
 
       var attributeCheck = new SimpleAttributeCheck(attribute, ChallengeLevel.Hard);
       var trainingSuccess = 0;
@@ -118,18 +128,19 @@ namespace UnderworldManager.Business
     public bool TryTrainSkill(Character character, SimpleSkillCheck skillCheck)
     {
       bool increase = false;
+      var professionName = character.Profession != null ? character.Profession.Profession.ToString() : "Unemployed";
 
       var SkillResult = DoChallenge(character, skillCheck);
 
       if (!SkillResult.Success)
       {
-        Console.Out.WriteLine($"Success! {character.Name} the {character.Profession} increases their {skillCheck.Skill} by 1");
+        Console.Out.WriteLine($"Success! {character.Name} the {professionName} increases their {skillCheck.Skill} by 1");
         character.Increase(skillCheck.Skill, 1, false);
         increase = true;
       }
       else
       {
-        Console.Out.WriteLine($"Failure! {character.Name} the {character.Profession} does not increase their {skillCheck.Skill}");
+        Console.Out.WriteLine($"Failure! {character.Name} the {professionName} does not increase their {skillCheck.Skill}");
       }
 
       return increase;
@@ -138,18 +149,19 @@ namespace UnderworldManager.Business
     public bool TryTrainAttribute(Character character, SimpleAttributeCheck attributeCheck)
     {
       bool increase = false;
+      var professionName = character.Profession != null ? character.Profession.Profession.ToString() : "Unemployed";
 
       var attributeResult = DoChallenge(character, attributeCheck);
 
       if (!attributeResult.Success)
       {
-        Console.Out.WriteLine($"Success! {character.Name} the {character.Profession} increases their {attributeCheck.Attribute} by 1");
+        Console.Out.WriteLine($"Success! {character.Name} the {professionName} increases their {attributeCheck.Attribute} by 1");
         character.Increase(attributeCheck.Attribute, 1, false);
         increase = true;
       }
       else
       {
-        Console.Out.WriteLine($"Failure! {character.Name} the {character.Profession} does not increase their {attributeCheck.Attribute}");
+        Console.Out.WriteLine($"Failure! {character.Name} the {professionName} does not increase their {attributeCheck.Attribute}");
       }
 
       return increase;

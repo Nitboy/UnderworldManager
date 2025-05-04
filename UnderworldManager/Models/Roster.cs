@@ -95,7 +95,7 @@ namespace UnderworldManager.Models
 
     public (string, List<Character>) ListCharactersForChallenge(Skill skill)
     {
-      var attribute = CharacterAttribute.GetCoreAttribute(skill);
+      var attribute = SkillUtils.GetCoreAttribute(skill);
       var sb = new StringBuilder();
       switch (attribute)
       {

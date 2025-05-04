@@ -5,7 +5,6 @@ namespace UnderworldManager.Business
   public class SkillCheckResult
   {
     public SkillCheck SkillCheck { get; set; }
-
     public SimpleResult DiceRoll { get; set; }
 
     public SkillCheckResult(SkillCheck skillCheck, SimpleResult diceRoll)
@@ -18,7 +17,6 @@ namespace UnderworldManager.Business
   public class SimpleAttributeCheckResult
   {
     public SimpleAttributeCheck Check { get; set; }
-
     public SimpleResult DiceRoll { get; set; }
 
     public SimpleAttributeCheckResult(SimpleAttributeCheck check, SimpleResult diceRoll)
@@ -28,16 +26,15 @@ namespace UnderworldManager.Business
     }
   }
 
-  public class SimpleSkillCheckResult
+  public class SkillCheckResultWrapper
   {
     public SimpleSkillCheck Check { get; set; }
-
     public SimpleResult DiceRoll { get; set; }
 
-    public SimpleSkillCheckResult(SimpleSkillCheck check, SimpleResult diceRoll)
+    public SkillCheckResultWrapper(SimpleSkillCheck check, SimpleResult diceRoll)
     {
       Check = check;
       DiceRoll = diceRoll;
     }
-  } 
+  }
 }

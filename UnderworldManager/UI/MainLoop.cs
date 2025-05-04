@@ -4,18 +4,19 @@ using System.Text;
 using System.Threading;
 using UnderworldManager.Business;
 using UnderworldManager.Models;
+using UnderworldManager.Game;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace UnderworldManager
 {
   public class MainLoop
   {
-    private readonly Game _game;
+    private readonly Game.Game _game;
     private bool gameRunning = true;
 
     private GameState state;
 
-    public MainLoop(Game game)
+    public MainLoop(Game.Game game)
     {
       _game = game;
     }
@@ -172,34 +173,14 @@ namespace UnderworldManager
 
     private void PrintSkillsWithAttributeHeading(Dictionary<CoreAttribute, List<Skill>> skills, Character character)
     {
-      int i = 0;
-      var sbSkills = new StringBuilder();
-      
-      sbSkills.AppendLine("╔════════════════════════════════════════════════════════════╗");
-      sbSkills.AppendLine("║                      AVAILABLE SKILLS                      ║");
-      sbSkills.AppendLine("╠════════════════════════════════════════════════════════════╣");
-      
-      foreach (var item in skills)
+      foreach (var attributeSkills in skills)
       {
-        var attributeValue = character.GetAttribute(item.Key);
-        sbSkills.AppendLine($"║ {item.Key} (Attribute: {attributeValue})");
-        sbSkills.AppendLine("╠════════════════════════════════════════════════════════════╣");
-        
-        foreach (var skill in item.Value)
+        Console.Out.WriteLine($"║ {attributeSkills.Key}({character.GetAttributeTotal(attributeSkills.Key)}):");
+        foreach (var skill in attributeSkills.Value)
         {
-          var skillValue = character.GetSkill(skill);
-          sbSkills.AppendLine($"║ {i + 1} - {skill} (Current: {skillValue})");
-          i++;
-        }
-        
-        if (item.Key != skills.Keys.Last())
-        {
-          sbSkills.AppendLine("╠════════════════════════════════════════════════════════════╣");
+          Console.Out.WriteLine($"║   {skill}({character.GetSkillTotal(skill)})");
         }
       }
-      
-      sbSkills.AppendLine("╚════════════════════════════════════════════════════════════╝");
-      Console.Out.WriteLine(sbSkills);
     }
 
     private void RunDailyJob()
@@ -213,11 +194,17 @@ namespace UnderworldManager
         Console.Out.WriteLine("║ Sending your gang out to earn some gold...               ║");
         Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
         
-        var result = _game.RunDailyJob();
+        var success = _game.RunDailyJob();
         
-        Console.Out.WriteLine($"║ Earnings: {result.Earnings} gold");
-        Console.Out.WriteLine($"║ Threat Increase: {result.ThreatIncrease}");
-        Console.Out.WriteLine($"║ Time Spent: {result.TimeSpent}");
+        if (success)
+        {
+          Console.Out.WriteLine($"║ Your gang has earned some gold and experience.");
+          Console.Out.WriteLine($"║ Threat level has increased.");
+        }
+        else
+        {
+          Console.Out.WriteLine($"║ Failed to run daily job.");
+        }
         Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
         Console.Out.WriteLine("║ Press Enter to continue...                               ║");
         Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
@@ -383,18 +370,11 @@ namespace UnderworldManager
       
       switch (result)
       {
-        case MissionResult.BasicSuccess:
-        case MissionResult.GoodSuccess:
-        case MissionResult.GreatSuccess:
-        case MissionResult.AstonishingSuccess:
+        case var r when r.Earnings > 0:
           Console.Out.WriteLine($"║ JOB SUCCESS - Your gang has earned {mission.EstimatedValue} gold");
           break;
-        case MissionResult.FailedBut:
-        case MissionResult.FailedAnd:
+        case var r when r.Earnings == 0:
           Console.Out.WriteLine($"║ JOB FAILED - The mission was not completed successfully");
-          break;
-        case MissionResult.MissionCutShort:
-          Console.Out.WriteLine($"║ JOB ABORTED - Mission was cut short due to critical failure");
           break;
         default:
           Console.Out.WriteLine($"║ UNKNOWN RESULT - Something unexpected happened");
@@ -402,7 +382,7 @@ namespace UnderworldManager
       }
       Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
 
-      _game.Gang.MissionSuccess(mission.EstimatedValue, mission.Honorable);
+      _game.Gang.MissionSuccess(mission.EstimatedValue, mission.IsHonorable);
       state = GameState.EndOfWeek;
     }
 

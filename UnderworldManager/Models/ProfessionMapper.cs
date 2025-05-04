@@ -39,7 +39,13 @@
       }
     }
 
-    public static Profession FindProfessionByAttribute(CoreAttribute attribute)
+    public static ProfessionInfo FindProfessionByAttribute(CoreAttribute attribute)
+    {
+      var profession = GetBasicProfessionByAttribute(attribute);
+      return new ProfessionInfo(profession, FindSkillByProfession(profession), attribute);
+    }
+
+    private static Profession GetBasicProfessionByAttribute(CoreAttribute attribute)
     {
       switch (attribute)
       {
@@ -56,7 +62,13 @@
       }
     }
 
-    public static Profession FindProfessionBySkill(Skill skill)
+    public static ProfessionInfo FindProfessionBySkill(Skill skill)
+    {
+      var profession = GetProfessionBySkill(skill);
+      return new ProfessionInfo(profession, skill, SkillUtils.GetCoreAttribute(skill));
+    }
+
+    private static Profession GetProfessionBySkill(Skill skill)
     {
       switch (skill)
       {
@@ -123,7 +135,7 @@
           return CoreAttribute.Charisma;
         default:
           var skill = FindSkillByProfession(profession);
-          return CharacterAttribute.GetCoreAttribute(skill);
+          return SkillUtils.GetCoreAttribute(skill);
       }
     }
 
@@ -131,6 +143,14 @@
     {
       switch (profession)
       {
+        case Profession.Brawler:
+          return Skill.MeleeCombat;
+        case Profession.Runner:
+          return Skill.Athletics;
+        case Profession.Apprentice:
+          return Skill.Alchemy;
+        case Profession.Grifter:
+          return Skill.Streetwise;
         case Profession.Enforcer:
           return Skill.MeleeCombat;
         case Profession.Scout:
@@ -174,7 +194,7 @@
         case Profession.CatBurglar:
           return Skill.Acrobatics;
         default:
-          throw new ArgumentException("Invalid Profession - Basic professsion is only tied to an attribute.");
+          throw new ArgumentException("Invalid profession type");
       }
     }
 

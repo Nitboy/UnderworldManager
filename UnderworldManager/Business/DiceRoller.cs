@@ -3,7 +3,6 @@
 namespace UnderworldManager.Business
 {
   public record SimpleInput(int Skill, int Difficulty = 0, int Modifiers = 0);
-  public record SimpleResult(int Roll, int TestedSkillValue, bool Success, int Successlevel, bool Crit, SimpleInput Input);
 
   public class RandomRoller : IRoller
   {
@@ -92,20 +91,6 @@ namespace UnderworldManager.Business
         sl = -6;
       }
       return sl;
-      //if (roll <= input - 60) return 6;
-      //if (roll <= input - 50) return 5;
-      //if (roll <= input - 40) return 4;
-      //if (roll <= input - 30) return 3;
-      //if (roll <= input - 20) return 2;
-      //if (roll <= input - 10) return 1;
-      //if (roll - input <= 9) return 0;
-      //if (roll - input >= 60) return -6;
-      //if (roll - input >= 50) return -5;
-      //if (roll - input >= 40) return -4;
-      //if (roll - input >= 30) return -3;
-      //if (roll - input >= 20) return -2;
-      //if (roll - input >= 10) return -1;
-      //return -6;
     }
   }
 }

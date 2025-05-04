@@ -30,10 +30,10 @@ namespace UnderworldManager.Business
       return result;
     }
 
-    public SimpleSkillCheckResult Run(SimpleSkillCheck challenge, Character character, int modifier = 0)
+    public SkillCheckResultWrapper Run(SimpleSkillCheck challenge, Character character, int modifier = 0)
     {
       var diceResult = _diceRoller.Simple(new SimpleInput(character.GetSkillRating(challenge.Skill), challenge.Difficulty, modifier));
-      var result = new SimpleSkillCheckResult(challenge, diceResult);
+      var result = new SkillCheckResultWrapper(challenge, diceResult);
       return result;
     }
   }
