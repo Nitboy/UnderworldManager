@@ -22,12 +22,7 @@ namespace UnderworldManager
 
 
     public void Run()
-    {
-      Console.Out.WriteLine();
-      Console.Out.WriteLine("UNDERWORLD MANAGER");
-      Console.Out.WriteLine("A game of crime, power, and survival in the underworld");
-      Console.Out.WriteLine();
-      
+    {     
       _game.StartRound();
       
       do

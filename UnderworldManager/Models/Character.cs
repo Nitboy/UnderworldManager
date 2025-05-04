@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnderworldManager.Models;
 using UnderworldManager.Business;
 
@@ -177,9 +180,12 @@ namespace UnderworldManager.Models
       Rank = rank;
       Gold = gold;
       SkillIncreases = new Dictionary<Skill, CharacterSkills>();
+      Dice = new RandomRoller();
       AssignNewRoles();
       AssignNewProfession();
     }
+
+    private IRoller Dice { get; set; }
 
     public void AssignNewProfession()
     {
@@ -486,14 +492,19 @@ namespace UnderworldManager.Models
         // TODO: Implement reputation system
     }
 
-    public SkillCheckResultWrapper SkillCheck(Skill skill, int difficulty)
+    public SkillCheckResultWrapper SkillCheck(Skill skill, int difficulty = 0)
     {
-        var skillValue = GetSkillRating(skill);
-        var roll = new Random().Next(1, 21);
-        var success = roll + skillValue >= difficulty;
-        var successLevel = (roll + skillValue - difficulty) / 5;
-        var input = new SimpleInput(skillValue, difficulty);
-        return new SkillCheckResultWrapper(new SimpleSkillCheck(skill, (ChallengeLevel)difficulty), new SimpleResult(roll, skillValue, success, successLevel, false, input));
+      var skillValue = GetSkillRating(skill);
+      var input = new SimpleInput(skillValue, difficulty);
+      var roll = Dice.RollD100();
+      var success = roll <= skillValue + difficulty;
+      var successLevel = (skillValue + difficulty - roll) / 10;
+      if (successLevel > 6) successLevel = 6;
+      if (successLevel < -6) successLevel = -6;
+      return new SkillCheckResultWrapper(
+        new SimpleSkillCheck(skill, (ChallengeLevel)difficulty), 
+        new SimpleResult(roll, skillValue + difficulty, success, successLevel, false, input)
+      );
     }
   }
 
