@@ -43,47 +43,61 @@ namespace UnderworldManager
     public void Run()
     {
       Console.Out.WriteLine();
-      Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-      Console.Out.WriteLine("║                    DAILY JOBS                             ║");
-      Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-      Console.Out.WriteLine("║ Your gang members are working their daily jobs...         ║");
-      Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-      Console.Out.WriteLine($"║ Current Threat Level: {_threat}                          ║");
-      Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+      Console.Out.WriteLine("DAILY JOBS");
+      Console.Out.WriteLine("Assigning jobs to your gang members...");
       Console.Out.WriteLine();
 
       foreach (var member in _roster.Active)
       {
-        Console.Out.WriteLine($"║ {member.Name} is working...                           ║");
+        Console.Out.WriteLine($"{member.Name} is working...");
         if (member.Profession == null)
         {
-          Console.Out.WriteLine($"║ {member.Name} has no profession and cannot work     ║");
+          Console.Out.WriteLine($"{member.Name} has no profession and cannot work");
           continue;
         }
-        var result = _conflictEngine.Run(new SimpleSkillCheck(member.Profession.Skill, SetChallengeLevel(_threat)), member);
-        var modifiedSkill = result.DiceRoll.TestedSkillValue + result.Check.Difficulty;
-        Console.Out.Write($"{member.Name} the {member.Profession.Profession}: {result.Check.ChallengeLevel}(+{result.Check.Difficulty}) {result.Check.Skill} Check: ({result.DiceRoll.TestedSkillValue}+{result.Check.Difficulty}={modifiedSkill}): ");
-        PrintRollResult(result.DiceRoll);
+
+        var result = DoChallenge(member, new SimpleSkillCheck(member.Profession.Skill, SetChallengeLevel(_threat)));
+        PrintRollResult(result);
+
+        if (result.Successlevel >= 2)
+        {
+          Console.Out.WriteLine();
+          Console.Out.WriteLine("CRITICAL SUCCESS");
+          Console.Out.WriteLine($"{member.Name} has achieved a critical success!");
+          _roster.RemoveFromRoster(member);
+        }
+        else if (result.Successlevel <= -2)
+        {
+          Console.Out.WriteLine();
+          Console.Out.WriteLine("CRITICAL FAILURE");
+          Console.Out.WriteLine($"{member.Name} has attracted unwanted attention!");
+          
+          if (!AvoidCapture(member, SetChallengeLevel(_threat)))
+          {
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("AGENT CAPTURED");
+            Console.Out.WriteLine($"{member.Name} has been captured by the city watch!");
+            _roster.RemoveFromRoster(member);
+          }
+        }
+
+        Console.Out.WriteLine();
+        Console.Out.WriteLine("Press Enter to continue...");
+        Console.ReadLine();
       }
 
       Console.Out.WriteLine();
-      Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-      Console.Out.WriteLine("║                    DAILY RESULTS                          ║");
-      Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-      Console.Out.WriteLine("║ Press Enter to continue...                                ║");
-      Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+      Console.Out.WriteLine("DAILY RESULTS");
+      Console.Out.WriteLine($"Total Earnings: {GetCurrentEarnings()} gold");
+      Console.Out.WriteLine($"Threat Increase: {_threat}");
+      Console.Out.WriteLine();
+      Console.Out.WriteLine("Press Enter to continue...");
       Console.ReadLine();
     }
 
     private static void PrintRollResult(SimpleResult result)
     {
-      Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-      Console.Out.WriteLine("║                      ROLL RESULT                          ║");
-      Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-      Console.Out.WriteLine($"║ Roll: {result.Roll}                                      ║");
-      Console.Out.WriteLine($"║ Target: {result.TestedSkillValue}                        ║");
-      Console.Out.WriteLine($"║ Success Level: {result.Successlevel}                     ║");
-      Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+      Console.Out.WriteLine($"Roll: {result.Roll} Target: {result.TestedSkillValue} Success Level: {result.Successlevel}");
     }
 
     private static ChallengeLevel SetChallengeLevel(int threat)
@@ -123,6 +137,24 @@ namespace UnderworldManager
       }
 
       return new DailyJobResult(earnings, _threat, critSuccess);
+    }
+
+    private SimpleResult DoChallenge(Character character, SimpleSkillCheck check)
+    {
+        var result = _conflictEngine.Run(check, character);
+        return result.DiceRoll;
+    }
+
+    private int GetCurrentEarnings()
+    {
+        return 10; // Default earnings for now
+    }
+
+    private bool AvoidCapture(Character character, ChallengeLevel challengeLevel)
+    {
+        var check = new SimpleSkillCheck(Skill.Athletics, challengeLevel);
+        var result = _conflictEngine.Run(check, character);
+        return result.DiceRoll.Success;
     }
   }
 

@@ -10,6 +10,7 @@
     Training,
     Finances,
     DailyJob,
+    LayLow,
     Mission,
     Conflict,
     EndOfWeek,

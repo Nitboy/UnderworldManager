@@ -32,28 +32,23 @@ namespace UnderworldManager
         public MissionResult Run()
         {
             Console.Out.WriteLine();
-            Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-            Console.Out.WriteLine("║                    MISSION START                          ║");
-            Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-            Console.Out.WriteLine("║ Sending your gang on a mission...                        ║");
-            Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-            Console.Out.WriteLine($"║ Current Threat Level: {_threat}                          ║");
-            Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+            Console.Out.WriteLine("MISSION START");
+            Console.Out.WriteLine("Sending your gang on a mission...");
+            Console.Out.WriteLine();
+            Console.Out.WriteLine($"Current Threat Level: {_threat}");
             Console.Out.WriteLine();
 
             _state = MissionState.Running;
             while (_state == MissionState.Running)
             {
-                Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-                Console.Out.WriteLine($"║                      ROUND {_round}                      ║");
-                Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
+                Console.Out.WriteLine($"ROUND {_round}");
 
                 foreach (var member in _gang.Roster.Active)
                 {
-                    Console.Out.WriteLine($"║ {member.Name} is working...                           ║");
+                    Console.Out.WriteLine($"{member.Name} is working...");
                     if (member.Profession == null)
                     {
-                        Console.Out.WriteLine($"║ {member.Name} has no profession and cannot work     ║");
+                        Console.Out.WriteLine($"{member.Name} has no profession and cannot work");
                         continue;
                     }
                     var result = HandleEventsOfResult(member, DoChallenge(member, new SimpleSkillCheck(member.Profession.Skill, SetChallengeLevel(_threat))));
@@ -66,9 +61,8 @@ namespace UnderworldManager
 
                 if (_state == MissionState.Running)
                 {
-                    Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-                    Console.Out.WriteLine("║ Press Enter to continue or 'q' to quit...                ║");
-                    Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+                    Console.Out.WriteLine();
+                    Console.Out.WriteLine("Press Enter to continue or 'q' to quit...");
                     
                     var input = Console.ReadLine();
                     if (input?.ToLower() == "q")
@@ -83,14 +77,11 @@ namespace UnderworldManager
             }
 
             Console.Out.WriteLine();
-            Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-            Console.Out.WriteLine("║                    MISSION RESULTS                        ║");
-            Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-            Console.Out.WriteLine($"║ Total Earnings: {GetCurrentEarnings()} gold              ║");
-            Console.Out.WriteLine($"║ Threat Increase: {_threat}                               ║");
-            Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-            Console.Out.WriteLine("║ Press Enter to continue...                                ║");
-            Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+            Console.Out.WriteLine("MISSION RESULTS");
+            Console.Out.WriteLine($"Total Earnings: {GetCurrentEarnings()} gold");
+            Console.Out.WriteLine($"Threat Increase: {_threat}");
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("Press Enter to continue...");
             Console.ReadLine();
 
             return new MissionResult(GetCurrentEarnings(), _threat, _memberCritSuccess);
@@ -105,28 +96,22 @@ namespace UnderworldManager
         {
             if (result.Successlevel >= 2)
             {
-                Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-                Console.Out.WriteLine("║                    CRITICAL SUCCESS                       ║");
-                Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-                Console.Out.WriteLine($"║ {member.Name} has achieved a critical success!           ║");
-                Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+                Console.Out.WriteLine();
+                Console.Out.WriteLine("CRITICAL SUCCESS");
+                Console.Out.WriteLine($"{member.Name} has achieved a critical success!");
                 _memberCritSuccess.Add(member);
             }
             else if (result.Successlevel <= -2)
             {
-                Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-                Console.Out.WriteLine("║                    CRITICAL FAILURE                       ║");
-                Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-                Console.Out.WriteLine($"║ {member.Name} has attracted unwanted attention!          ║");
-                Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+                Console.Out.WriteLine();
+                Console.Out.WriteLine("CRITICAL FAILURE");
+                Console.Out.WriteLine($"{member.Name} has attracted unwanted attention!");
                 
                 if (!AvoidCapture(member, SetChallengeLevel(_threat)))
                 {
-                    Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-                    Console.Out.WriteLine("║                    AGENT CAPTURED                        ║");
-                    Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-                    Console.Out.WriteLine($"║ {member.Name} has been captured by the city watch!      ║");
-                    Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+                    Console.Out.WriteLine();
+                    Console.Out.WriteLine("AGENT CAPTURED");
+                    Console.Out.WriteLine($"{member.Name} has been captured by the city watch!");
                     return false;
                 }
             }

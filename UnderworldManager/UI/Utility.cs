@@ -2,33 +2,25 @@
 {
   public static class Utility
   {
-    public static int GetNumber(int minNum = -1, int maxNum = -1, string errorMessage = "Must Choose a number between ")
+    public static int GetNumber(int min, int max)
     {
-      do
+      while (true)
       {
-        int choice;
-        Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-        Console.Out.WriteLine("║                      INPUT REQUIRED                       ║");
-        Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-        Console.Out.Write($"║ Input {minNum}-{maxNum} > ");
-        var input = Console.In.ReadLine();
-        Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
-        
-        if (int.TryParse(input, out choice))
+        Console.Out.WriteLine();
+        Console.Out.WriteLine("INPUT REQUIRED");
+        Console.Out.WriteLine($"Please enter a number between {min} and {max}:");
+        Console.Out.WriteLine();
+
+        var input = Console.ReadLine();
+        if (int.TryParse(input, out var number) && number >= min && number <= max)
         {
-          if ((minNum == -1 && maxNum == -1) || (choice >= minNum && choice <= maxNum))
-          {
-            return choice;
-          }
+          return number;
         }
-        
-        Console.Out.WriteLine("╔════════════════════════════════════════════════════════════╗");
-        Console.Out.WriteLine("║                      ERROR                               ║");
-        Console.Out.WriteLine("╠════════════════════════════════════════════════════════════╣");
-        Console.Out.WriteLine($"║ {errorMessage} {minNum}-{maxNum}                        ║");
-        Console.Out.WriteLine("╚════════════════════════════════════════════════════════════╝");
+
+        Console.Out.WriteLine();
+        Console.Out.WriteLine("INVALID INPUT");
+        Console.Out.WriteLine($"Please enter a number between {min} and {max}");
       }
-      while (true);
     }
   }
 }
