@@ -1,0 +1,95 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6x8vuy6hg1xv"]
+
+[ext_resource type="Script" path="res://scripts/CharacterDetails.cs" id="1_y4m2n"]
+
+[node name="CharacterDetails" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y4m2n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Character Details"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterInfo" type="RichTextLabel" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Character Info"
+bbcode_enabled = true
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsGrid" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="StrengthLabel" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "Strength"
+
+[node name="StrengthValue" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "0"
+
+[node name="AgilityLabel" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "Agility"
+
+[node name="AgilityValue" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "0"
+
+[node name="IntelligenceLabel" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "Intelligence"
+
+[node name="IntelligenceValue" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "0"
+
+[node name="CharismaLabel" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "Charisma"
+
+[node name="CharismaValue" type="Label" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "0"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SkillsGrid" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="SkillsLabel" type="Label" parent="VBoxContainer/SkillsGrid"]
+layout_mode = 2
+text = "Skills"
+
+[node name="SkillsValue" type="Label" parent="VBoxContainer/SkillsGrid"]
+layout_mode = 2
+text = "None"
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Back to Main Menu (B)" 

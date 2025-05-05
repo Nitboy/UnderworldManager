@@ -2,9 +2,9 @@
 using System;
 using System.IO;
 using System.Text;
-using UnderworldManager.Business;
-using UnderworldManager.Game;
-using UnderworldManager.Models;
+using UnderworldManager.Core.Business;
+using UnderworldManager.Core.Models;
+using UnderworldManager.UI;
 
 namespace UnderworldManager
 {
@@ -28,19 +28,19 @@ namespace UnderworldManager
             Console.Out.WriteLine();
             Console.Out.WriteLine();
 
-            CharGen cg = new CharGen();
+            var cg = new CharGen();
             var c = cg.CreateCharacter(1, null, true);
             Console.WriteLine("Your character has been generated:");
             Console.WriteLine(c);
 
-            GangGen gg = new GangGen();
+            var gg = new GangGen();
             var g = gg.CreateGang();
             g.Members.Add(c);
             g.ResetRoster();
             Console.WriteLine("Your gang has been generated:");
             Console.WriteLine(g);
 
-            var game = new Game.Game(c, g);
+            var game = new UnderworldManager.Core.Business.Game(c, g);
             var mainloop = new MainLoop(game);
             mainloop.Run();
         }

@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using UnderworldManager.Business;
-using UnderworldManager.Models;
-using UnderworldManager.Game;
+using UnderworldManager.Core.Business;
+using UnderworldManager.Core.Models;
 using static System.Formats.Asn1.AsnWriter;
+using UnderworldManager.Models;
 
-namespace UnderworldManager
+namespace UnderworldManager.UI
 {
   public class MainLoop
   {
-    private readonly Game.Game _game;
+    private readonly UnderworldManager.Core.Business.Game _game;
     private bool gameRunning = true;
     private GameState state;
 
-    public MainLoop(Game.Game game)
+    public MainLoop(UnderworldManager.Core.Business.Game game)
     {
       _game = game;
     }
@@ -270,27 +271,26 @@ namespace UnderworldManager
       Console.Out.WriteLine("AVAILABLE JOBS");
       Console.Out.WriteLine();
       
-      var availableJobs = GenerateAvailableJobs();
-      for (int i = 0; i < availableJobs.Count; i++)
+      var jobGenerator = new JobGenerator(_game.Gang, _game.GameRounds);
+      var availableMissions = jobGenerator.GenerateAvailableMissions();
+      
+      for (int i = 0; i < availableMissions.Count; i++)
       {
-        var job = availableJobs[i];
-        Console.Out.WriteLine($"{i + 1} - {job.Item2}");
-        Console.Out.WriteLine($"    Estimated value: {_game.GetMissionValue(job.Item3)} gold");
-        Console.Out.WriteLine($"    Base threat: {_game.GetBaseThreatLevel(job.Item3)}");
+        var mission = availableMissions[i];
+        Console.Out.WriteLine($"{i + 1} - {MissionSkillChecks.GetMissionDescription(mission.Type)}");
+        Console.Out.WriteLine($"    Estimated value: {mission.EstimatedValue} gold");
+        Console.Out.WriteLine($"    Base threat: {mission.ThreatLevel}");
+        Console.Out.WriteLine($"    Honor: {(mission.IsHonorable ? "Honorable" : "Dishonorable")}");
         Console.Out.WriteLine();
       }
       
-      var choice = Utility.GetNumber(1, availableJobs.Count) - 1;
-      var mission = new Mission(
-        availableJobs[choice].Item1,
-        _game.GetMissionValue(availableJobs[choice].Item3),
-        _game.GetBaseThreatLevel(availableJobs[choice].Item3),
-        availableJobs[choice].Item3);
+      var choice = Utility.GetNumber(1, availableMissions.Count) - 1;
+      var selectedMission = availableMissions[choice];
 
       Console.Out.WriteLine();
       Console.Out.WriteLine("MISSION START");
       
-      var missionRunner = new MissionRunner(_game.Gang.Roster, mission, new Business.ConflictEngine());
+      var missionRunner = new MissionRunner(_game.Gang.Roster, selectedMission, new ConflictEngine());
       var result = missionRunner.Run();
       
       Console.Out.WriteLine();
@@ -298,10 +298,10 @@ namespace UnderworldManager
       
       switch (result)
       {
-        case var r when r.Earnings > 0:
-          Console.Out.WriteLine($"JOB SUCCESS - Your gang has earned {mission.EstimatedValue} gold");
+        case var r when r.GoldEarned > 0:
+          Console.Out.WriteLine($"JOB SUCCESS - Your gang has earned {selectedMission.EstimatedValue} gold");
           break;
-        case var r when r.Earnings == 0:
+        case var r when r.GoldEarned == 0:
           Console.Out.WriteLine($"JOB FAILED - The mission was not completed successfully");
           break;
         default:
@@ -309,35 +309,8 @@ namespace UnderworldManager
           break;
       }
 
-      _game.Gang.MissionSuccess(mission.EstimatedValue, mission.IsHonorable);
+      _game.Gang.MissionSuccess(selectedMission.EstimatedValue, selectedMission.IsHonorable);
       state = GameState.EndOfWeek;
-    }
-
-    private List<Tuple<MissionType, string, bool>> GenerateAvailableJobs()
-    {
-      Console.Out.WriteLine();
-      Console.Out.WriteLine("GENERATING JOBS");
-      Console.Out.WriteLine("Contacting your network for available jobs...");
-      Console.Out.WriteLine();
-
-      Random rand = new Random();
-      List<Tuple<MissionType, string, bool>> missions = new List<Tuple<MissionType, string, bool>>();
-      
-      for (int i = 0; i < 3; i++)
-      {
-        var missionType = (MissionType)rand.Next(Enum.GetNames(typeof(MissionType)).Length);
-        var description = MissionSkillChecks.GetMissionDescription(missionType);
-        var isHonorable = MissionSkillChecks.IsHonorable(missionType);
-        
-        Console.Out.WriteLine($"Job {i + 1}: {description}");
-        Console.Out.WriteLine($"Type: {missionType}");
-        Console.Out.WriteLine($"Honor: {(isHonorable ? "Honorable" : "Dishonorable")}");
-        Console.Out.WriteLine();
-        
-        missions.Add(new Tuple<MissionType, string, bool>(missionType, description, isHonorable));
-      }
-
-      return missions;
     }
 
     private void RunRoster()

@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6x8vuy6hg1xv"]
+
+[ext_resource type="Script" path="res://scripts/Training.cs" id="1_y4m2n"]
+
+[node name="Training" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y4m2n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Training"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="CharacterInfo" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Character Info"
+bbcode_enabled = true
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TrainingOptions" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="StrengthLabel" type="Label" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Strength Training"
+
+[node name="StrengthButton" type="Button" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Train (S)"
+
+[node name="AgilityLabel" type="Label" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Agility Training"
+
+[node name="AgilityButton" type="Button" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Train (A)"
+
+[node name="IntelligenceLabel" type="Label" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Intelligence Training"
+
+[node name="IntelligenceButton" type="Button" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Train (I)"
+
+[node name="CharismaLabel" type="Label" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Charisma Training"
+
+[node name="CharismaButton" type="Button" parent="VBoxContainer/TrainingOptions"]
+layout_mode = 2
+text = "Train (C)"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TrainingLog" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Training Log"
+bbcode_enabled = true
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Back to Main Menu (B)" 

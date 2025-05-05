@@ -1,0 +1,77 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6x8vuy6hg1xv"]
+
+[ext_resource type="Script" path="res://scripts/Street.cs" id="1_y4m2n"]
+
+[node name="Street" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y4m2n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Street Action"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="GangInfo" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Gang Info"
+bbcode_enabled = true
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ActionOptions" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="MissionLabel" type="Label" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Mission"
+
+[node name="MissionButton" type="Button" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Start Mission (M)"
+
+[node name="JobLabel" type="Label" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Daily Job"
+
+[node name="JobButton" type="Button" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Start Job (J)"
+
+[node name="LayLowLabel" type="Label" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Lay Low"
+
+[node name="LayLowButton" type="Button" parent="VBoxContainer/ActionOptions"]
+layout_mode = 2
+text = "Lay Low (L)"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ActionLog" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Action Log"
+bbcode_enabled = true
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Back to Main Menu (B)" 

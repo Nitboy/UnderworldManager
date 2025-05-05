@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnderworldManager\UnderworldManager.csproj" />
+    <ProjectReference Include="..\UnderworldManager.Core\UnderworldManager.Core.csproj" />
   </ItemGroup>
 
 </Project>

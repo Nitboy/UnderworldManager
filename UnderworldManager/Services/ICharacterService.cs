@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using UnderworldManager.Models;
+using UnderworldManager.Core.Models;
 
 namespace UnderworldManager.Services
 {

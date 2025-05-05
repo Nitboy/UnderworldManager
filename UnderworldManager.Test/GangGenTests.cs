@@ -1,4 +1,4 @@
-﻿using UnderworldManager.Business;
+﻿using UnderworldManager.Core.Business;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnderworldManager.Test
