@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnderworldManager.Console", "UnderworldManager.Console\UnderworldManager.Console.csproj", "{765BF7F2-1179-4C2E-8FF4-63CC0E481095}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnderworldManager.ConsoleApp", "UnderworldManager.ConsoleApp\UnderworldManager.ConsoleApp.csproj", "{765BF7F2-1179-4C2E-8FF4-63CC0E481095}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
